@@ -1,0 +1,26 @@
+# Yappie-Yappie
+
+Welcome!
+
+I am building this to explore new things and also making a chatting space which currently is exclusive only to me and my best friends, where we make groups and chat together.
+
+Though there are already existing apps, this will be exclusive only to us.
+
+---
+
+## 🛠️ Tech Stack
+
+- Node.js
+- Express
+- MongoDB (Mongoose)
+- React (Vite)
+- Socket.IO
+- Tailwind CSS
+
+---
+
+## 📁 Project Structure
+
+yappieyappie/
+├── server/ → backend (Express + MongoDB + Socket.IO)
+└── client/ → frontend (React + Tailwind + Socket.IO-client)
