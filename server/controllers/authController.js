@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 // Register/SignUp
 const registerUser = async(req,res)=>{
@@ -15,7 +16,13 @@ const registerUser = async(req,res)=>{
     if(existingUser){
         return res.status(409).json({message:'Username or Email is Already Taken!'})
     }
-    const newUser = await User.create({name,username,email,password});
+    const hashedPassword = await bcrypt.hash(password,10)
+    const newUser = await User.create({
+                    name,
+                    username,
+                    email,
+                    password:hashedPassword
+    });
     return res.status(201).json({message:"User Successfully Registered!"});
     }
 
@@ -29,11 +36,13 @@ const loginUser = async(req,res)=>{
     try{
         const {username,password} = req.body;
         const user = await User.findOne({username});
+        const isMatch = await bcrypt.compare(password,user.password);
         // Simple Validation
-        if(!user || user.password !== password){
+        if(!user || !isMatch){
             return res.status(401).json({message:"Invalid Credentials!"});
         }
-        return res.status(200).json({message:"✔️Login Successful!",user})
+        const {password:_,...userData} = user._doc
+        return res.status(200).json({message:"✔️Login Successful!",userData})
     }
     catch(err){
         return res.status(500).json({message:"Something went wrong!",error:err.message});
