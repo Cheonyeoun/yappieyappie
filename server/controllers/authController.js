@@ -31,6 +31,10 @@ const registerUser = async(req,res)=>{
     }
 }
 
+// Generate dummy hash once when the server starts
+const DUMMY_PASSWORD = 'invalid-password';
+const dummyHashPromise = bcrypt.hash(DUMMY_PASSWORD, 10);
+
 // Login
 const loginUser = async(req,res)=>{
     try{
@@ -43,8 +47,8 @@ const loginUser = async(req,res)=>{
         
         // Try to find User
         const user = await User.findOne({username});
-        const dummyHash = '$2b$10$U.RpiBwWU4aWFklNMuZZz.fJ3iZEcnTbyJNNhJYlJINOPwTuGrDcS';
-        const isMatch = await bcrypt.compare(password, user ? user.password : dummyHash);
+        const hashedPassword = user ? user.password : await dummyHashPromise;
+        const isMatch = await bcrypt.compare(password,hashedPassword);
 
         if(!user || !isMatch){
             return res.status(401).json({ message: "Invalid username or password" });
