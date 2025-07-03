@@ -43,7 +43,7 @@ const loginUser = async(req,res)=>{
         
         // Try to find User
         const user = await User.findOne({username});
-        const dummyHash = '$2a$10$aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+        const dummyHash = '$2b$10$U.RpiBwWU4aWFklNMuZZz.fJ3iZEcnTbyJNNhJYlJINOPwTuGrDcS';
         const isMatch = await bcrypt.compare(password, user ? user.password : dummyHash);
 
         if(!user || !isMatch){
