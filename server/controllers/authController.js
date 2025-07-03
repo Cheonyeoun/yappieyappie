@@ -38,14 +38,13 @@ const loginUser = async(req,res)=>{
         if(!username || !password){
             return res.status(400).json({message:'username and password are required'});
         }   
-
         const user = await User.findOne({username});
-        // Simple Validation
-        if(!user){
-            return res.status(401).json({ message: "Invalid username or password" });
+        let isMatch = false;
+        if(user){
+            isMatch = await bcrypt.compare(password,user.password);
         }
-        const isMatch = await bcrypt.compare(password,user.password);
-        if(!isMatch){
+        // Validation
+        if(!user || !isMatch){
             return res.status(401).json({ message: "Invalid username or password" });
         }
         const {password:_,...userData} = user._doc
