@@ -40,7 +40,7 @@ const loginUser = async(req,res)=>{
     try{
         const {username,password} = req.body;
 
-        // Input validation
+        // Input validation 
         if(!username || !password){
             return res.status(400).json({message:'Username and password are required'});
         } 
