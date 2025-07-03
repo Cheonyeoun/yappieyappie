@@ -3,11 +3,16 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const http = require('http');
 const { Server } = require('socket.io');
+const authRoutes = require('./routes/authRoutes');
  
 const app = express();
 dotenv.config();
 
+// middleware
 app.use(express.json());
+app.use('/api/user',authRoutes)
+
+
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3000;
