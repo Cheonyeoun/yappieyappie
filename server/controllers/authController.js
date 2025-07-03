@@ -35,10 +35,17 @@ const registerUser = async(req,res)=>{
 const loginUser = async(req,res)=>{
     try{
         const {username,password} = req.body;
+        if(!username || !password){
+            return res.status(400).json({message:'username and password are required'});
+        }   
+
         const user = await User.findOne({username});
-        const isMatch = await bcrypt.compare(password,user.password);
         // Simple Validation
-        if(!user || !isMatch){
+        if(!user){
+            return res.status(401).json({message:"Invalid Credentials!"});
+        }
+        const isMatch = await bcrypt.compare(password,user.password);
+        if(!isMatch){
             return res.status(401).json({message:"Invalid Credentials!"});
         }
         const {password:_,...userData} = user._doc
