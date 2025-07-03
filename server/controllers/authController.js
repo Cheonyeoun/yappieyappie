@@ -31,17 +31,9 @@ const registerUser = async(req,res)=>{
     }
 }
 
-
-const DUMMY_PASSWORD = 'invalid-password';
-let dummyHash;
-
 // Generate dummy hash once when the server starts
-bcrypt.hash(DUMMY_PASSWORD, 10).then(hash => {
-  dummyHash = hash;
-}).catch(err => {
-  console.error("Failed to generate dummy hash", err);
-});
-
+const DUMMY_PASSWORD = 'invalid-password';
+const dummyHashPromise = bcrypt.hash(DUMMY_PASSWORD, 10);
 
 // Login
 const loginUser = async(req,res)=>{
@@ -55,10 +47,7 @@ const loginUser = async(req,res)=>{
         
         // Try to find User
         const user = await User.findOne({username});
-        if (!dummyHash) {
-            dummyHash = await bcrypt.hash(DUMMY_PASSWORD, 10);
-        }
-        const hashedPassword = user ? user.password : dummyHash;
+        const hashedPassword = user ? user.password : await dummyHashPromise;
         const isMatch = await bcrypt.compare(password,hashedPassword);
 
         if(!user || !isMatch){
